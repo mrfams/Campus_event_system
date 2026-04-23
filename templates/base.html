@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Campus Event System</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+
+<header>
+    <a href="{% url 'home' %}">Home</a> |
+    <a href="{% url 'club' %}">Club</a> |
+    <a href="{% url 'event' %}">Event</a> |
+    <a href="{% url 'user' %}">Users</a>
+</header>
+
+<hr>
+
+{% block content %}
+{% endblock content %}
+
+</body>
+</html>
