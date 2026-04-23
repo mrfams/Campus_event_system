@@ -1,6 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Home Page</h1>
-<p>Welcome to Campus Event & Club Management System</p>
+
+<h1 class="text-3xl font-bold mb-8">Home</h1>
+
+<!-- UPCOMING EVENTS -->
+<h2 class="text-2xl font-semibold mb-4">Upcoming Events</h2>
+
+{% for event in events %}
+    <div class="bg-white p-4 mb-4 rounded shadow">
+
+        <h3 class="text-xl font-bold">{{ event.title }}</h3>
+
+        <p class="text-gray-700">{{ event.description }}</p>
+
+        <p class="text-sm text-gray-500 mt-2">
+            {{ event.event_date }}
+        </p>
+
+    </div>
+{% empty %}
+    <p>No events available.</p>
+{% endfor %}
+
+<hr class="my-8">
+
+<!-- APPROVED CLUBS -->
+<h2 class="text-2xl font-semibold mb-4">Approved Clubs</h2>
+
+{% for club in clubs %}
+    <div class="bg-white p-4 mb-4 rounded shadow">
+
+        <h3 class="text-xl font-bold">{{ club.name }}</h3>
+
+        <p class="text-gray-700">{{ club.description }}</p>
+
+        {% if club.logo %}
+            <img src="{{ club.logo.url }}" class="w-20 h-20 mt-2 rounded">
+        {% endif %}
+
+    </div>
+{% empty %}
+    <p>No clubs available.</p>
+{% endfor %}
+
 {% endblock content %}

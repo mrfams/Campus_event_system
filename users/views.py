@@ -1,6 +1,7 @@
-from django.views.generic import TemplateView
+from django.views.generic import ListView
+from .models import User
 
-class UserPageView(TemplateView):
+class UserListView(ListView):
+    model = User
     template_name = "users.html"
-
-# Create your views here.
+    context_object_name = "users"

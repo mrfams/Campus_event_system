@@ -1,5 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Club Page</h1>
-{% endblock content %}
+
+<h1 class="text-2xl font-bold mb-6">Clubs</h1>
+
+{% for club in clubs %}
+    <div class="bg-white p-4 mb-4 rounded shadow">
+
+        <h2 class="text-xl font-semibold">{{ club.name }}</h2>
+
+        <p>{{ club.description }}</p>
+
+        {% if club.logo %}
+            <img src="{{ club.logo.url }}" class="w-24 h-24 mt-2">
+        {% endif %}
+
+    </div>
+{% endfor %}
+
+{% endblock %}
