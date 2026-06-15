@@ -1,0 +1,23 @@
+# Python/Django
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+*.egg-info/
+dist/
+build/
+db.sqlite3
+media/
+*.log
+.local/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
