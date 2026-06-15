@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-3xl font-bold mb-6">Admin Club Management</h1>
+<div class="space-y-4">
+    {% for club in clubs %}
+    <div class="bg-white p-4 rounded shadow flex justify-between items-center">
+        <div>
+            <span class="font-semibold">{{ club.name }}</span>
+            <span class="text-gray-600">({{ club.manager.username }})</span>
+            <span class="text-sm">
+                {% if club.is_approved %}
+                <span class="text-green-600">Approved</span>
+                {% else %}
+                <span class="text-orange-600">Pending</span>
+                {% endif %}
+            </span>
+        </div>
+        <div class="space-x-2">
+            <a href="{% url 'club-approve' pk=club.pk %}" class="text-blue-600 underline">Approve</a>
+            {% if not club.is_approved %}
+            <a href="{% url 'admin-club-reject' pk=club.pk %}" class="text-orange-600 underline">Reject</a>
+            {% endif %}
+            <a href="{% url 'admin-club-delete' pk=club.pk %}" class="text-red-600 underline">Delete</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

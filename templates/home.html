@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load event_tags %}
+{% block content %}
+<div class="text-center py-12">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+            Welcome to Campus Event & Club Management System
+        </h1>
+        <p class="text-lg text-gray-600 mb-8">
+            Connect with clubs, join events, and enhance your campus experience.
+        </p>
+        <div class="space-x-4">
+            {% if user.is_authenticated %}
+                <a href="{% url 'club-list' %}" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                    View Clubs
+                </a>
+                <a href="{% url 'event-list' %}" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                    View Events
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                    Login
+                </a>
+                <a href="{% url 'register' %}" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                    Sign Up
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<h2 class="text-3xl font-bold text-center mt-16 mb-8 text-gray-800">Featured Clubs</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    {% for club in clubs %}
+<div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow border-t-4 border-blue-500">
+        {% if club.logo %}
+        <img src="{{ club.logo.url }}" alt="{{ club.name }}" class="w-16 h-16 rounded-lg object-cover mb-3">
+        {% endif %}
+        <h3 class="text-xl font-bold text-gray-800">{{ club.name }}</h3>
+        <p class="text-gray-600 mt-2 line-clamp-3">{{ club.description|truncatewords:20 }}</p>
+        <div class="mt-4 flex space-x-2">
+            <a href="{% url 'club-detail' pk=club.pk %}" class="flex-1 text-center text-blue-600 font-semibold hover:underline">
+                View Details
+            </a>
+            {% if user.is_authenticated and user.role == 'student' or user.role == 'club_manager' %}
+                {% if user.role == 'club_manager' and club.manager == user %}
+                <span class="text-gray-500 text-sm font-medium self-center">Your Club</span>
+                {% elif user in club.members.all %}
+                <span class="text-green-600 text-sm font-medium self-center">Joined</span>
+                {% else %}
+                <form method="post" action="{% url 'club-join' pk=club.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="text-green-600 font-semibold hover:underline">
+                        Join
+                    </button>
+                </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-gray-500 text-center col-span-3">No clubs available.</p>
+    {% endfor %}
+</div>
+
+<h2 class="text-3xl font-bold text-center mt-16 mb-8 text-gray-800">Upcoming Events</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    {% for event in events %}
+    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow border-t-4 border-green-500">
+        <h3 class="text-xl font-bold text-gray-800">{{ event.title }}</h3>
+        <p class="text-gray-600 mt-2">{{ event.club.name }} • {{ event.date|date:"M d, Y" }}</p>
+        <p class="text-gray-500 text-sm mt-1 line-clamp-2">{{ event.description|truncatewords:15 }}</p>
+        <div class="mt-4 flex space-x-2">
+            <a href="{% url 'event-detail' pk=event.pk %}" class="flex-1 text-center text-green-600 font-semibold hover:underline">
+                View Details
+            </a>
+            {% if user.is_authenticated and user.role == 'student' or user.role == 'club_manager' %}
+                {% if user.role == 'club_manager' and event.club.manager == user %}
+                <span class="text-gray-500 text-sm self-center">Your Event</span>
+                {% elif event|is_registered:user %}
+                <span class="text-gray-500 text-sm self-center">Registered</span>
+                {% else %}
+                <form method="post" action="{% url 'event-register' pk=event.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="text-green-600 font-semibold hover:underline">
+                        Register
+                    </button>
+                </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-gray-500 text-center col-span-3">No events available.</p>
+    {% endfor %}
+</div>
+{% endblock %}

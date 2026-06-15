@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-3xl font-bold mb-6">Delete Event</h1>
+<form method="post">
+    {% csrf_token %}
+    <p class="mb-4">Are you sure you want to delete "{{ object.title }}"?</p>
+    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Confirm Delete</button>
+    <a href="{% url 'admin-event-list' %}" class="ml-2 text-gray-600 hover:text-gray-800">Cancel</a>
+</form>
+{% endblock %}

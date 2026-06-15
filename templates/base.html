@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Campus System</title>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    {% if messages %}
+    <div class="fixed top-4 right-4 z-50 space-y-2">
+        {% for message in messages %}
+        <div class="p-4 rounded shadow-md 
+            {% if message.tags == 'success' %}bg-green-100 border border-green-400 text-green-700
+            {% elif message.tags == 'warning' %}bg-yellow-100 border border-yellow-400 text-yellow-700
+            {% else %}bg-red-100 border border-red-400 text-red-700{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <nav class="bg-blue-900 p-4 text-white shadow-lg">
+        <div class="container mx-auto flex items-center">
+            <a href="{% url 'home' %}" class="text-2xl font-bold mr-auto">CampusSystem</a>
+            <div class="flex-1 flex justify-center space-x-8">
+                <a href="{% url 'home' %}" class="hover:text-blue-200 font-bold uppercase tracking-wide">Home</a>
+                <a href="{% url 'club-list' %}" class="hover:text-blue-200 font-bold uppercase tracking-wide">Clubs</a>
+                <a href="{% url 'event-list' %}" class="hover:text-blue-200 font-bold uppercase tracking-wide">Events</a>
+                {% if user.is_authenticated %}
+                    {% if user.role == 'club_manager' or user.role == 'admin' %}
+                    <a href="{% url 'manager-dashboard' %}" class="hover:text-blue-200 font-bold uppercase tracking-wide">Dashboard</a>
+                    {% endif %}
+                    {% if user.role == 'admin' %}
+                    <div class="relative group">
+                        <button class="hover:text-blue-200 font-bold uppercase tracking-wide">Admin Panel ▼</button>
+                        <div class="absolute left-0 mt-2 bg-blue-800 rounded-md shadow-lg min-w-48 hidden group-hover:block z-50">
+                            <a href="{% url 'admin-club-list' %}" class="block px-4 py-2 hover:bg-blue-700">Manage Clubs</a>
+                            <a href="{% url 'admin-user-list' %}" class="block px-4 py-2 hover:bg-blue-700">Manage Users</a>
+                            <a href="{% url 'admin-event-list' %}" class="block px-4 py-2 hover:bg-blue-700">Manage Events</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="space-x-4 flex items-center ml-auto">
+                {% if user.is_authenticated %}
+                    <span class="text-sm">{{ user.get_role_display }}</span>
+                    <a href="{% url 'profile' %}" class="hover:text-blue-200">{{ user.username }}</a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-red-600 px-4 py-2 rounded font-bold hover:bg-red-700">
+                        Logout
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="font-bold">Login</a>
+                    <a href="{% url 'register' %}" class="bg-green-600 px-4 py-2 rounded font-bold">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <main class="p-6">
+        <div class="w-full {% if form.errors %}max-w-md{% else %}max-w-none{% endif %}">
+            {% if form.errors %}
+            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                <ul class="list-disc list-inside">
+                    {% for field in form %}
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+</body>
+</html>

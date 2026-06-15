@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-3xl font-bold mb-6">Admin Dashboard</h1>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="bg-white p-6 rounded-xl shadow-md">
+        <h2 class="text-xl font-bold mb-4 text-blue-700">Club Management</h2>
+        <div class="space-y-3">
+            <a href="{% url 'admin-club-list' %}" class="block text-blue-600 hover:underline">Manage Clubs ({{ clubs_pending_count }} pending)</a>
+            <a href="{% url 'admin-user-list' %}" class="block text-blue-600 hover:underline">Manage Users</a>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-md">
+        <h2 class="text-xl font-bold mb-4 text-green-700">Event Management</h2>
+        <div class="space-y-3">
+            <a href="{% url 'admin-event-list' %}" class="block text-green-600 hover:underline">Manage Events</a>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-md">
+        <h2 class="text-xl font-bold mb-4 text-purple-700">Statistics</h2>
+        <div class="space-y-2 text-sm">
+            <p>Total Users: <strong>{{ total_users }}</strong></p>
+            <p>Total Clubs: <strong>{{ total_clubs }}</strong></p>
+            <p>Total Events: <strong>{{ total_events }}</strong></p>
+            <p>Approved Clubs: <strong>{{ approved_clubs }}</strong></p>
+        </div>
+    </div>
+</div>
+
+<h2 class="text-2xl font-bold mt-8 mb-4">Pending Club Approvals</h2>
+<div class="space-y-4">
+    {% for club in clubs %}
+    <div class="bg-white p-4 rounded shadow flex justify-between items-center">
+        <span>{{ club.name }} - Manager: {{ club.manager.username }}</span>
+        <div class="space-x-2">
+            <a href="{% url 'club-approve' pk=club.pk %}" class="text-blue-600 underline">Approve</a>
+            <a href="{% url 'admin-club-reject' pk=club.pk %}" class="text-orange-600 underline">Reject</a>
+            <a href="{% url 'admin-club-delete' pk=club.pk %}" class="text-red-600 underline">Delete</a>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-gray-500">No pending clubs.</p>
+    {% endfor %}
+</div>
+{% endblock %}

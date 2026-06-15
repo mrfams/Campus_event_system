@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-3xl font-bold mb-6">Reject Club</h1>
+<form method="post">
+    {% csrf_token %}
+    <p class="mb-4">Are you sure you want to reject {{ object.name }}?</p>
+    <button type="submit" class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700">Confirm Reject</button>
+    <a href="{% url 'admin-club-list' %}" class="ml-2 text-gray-600 hover:text-gray-800">Cancel</a>
+</form>
+{% endblock %}

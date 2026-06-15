@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load event_tags %}
+{% block content %}
+<h1 class="text-3xl font-bold mb-8 text-center">Upcoming Events</h1>
+<form method="get" class="mb-6 max-w-2xl mx-auto flex space-x-2">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search events..." class="flex-1 px-4 py-2 border rounded-lg">
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Search</button>
+</form>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+    {% for event in events %}
+    <div class="bg-white p-6 rounded-xl shadow-md w-full hover:shadow-xl transition-shadow border-b-4 border-green-500">
+        <h2 class="text-xl font-bold text-gray-800">{{ event.title }}</h2>
+        <p class="text-lg font-semibold text-blue-700 mt-2">Club: {{ event.club.name }}</p>
+        <p class="text-sm font-semibold text-purple-700 mt-1">{{ event.date }}</p>
+        {% if user.is_authenticated %}
+            {% if user.role == 'club_manager' or user.role == 'admin' %}
+                {% if event.club.manager == user %}
+                <div class="mt-2 space-x-2">
+                    <a href="{% url 'event-edit' pk=event.pk %}" class="text-blue-600 underline">Edit</a>
+                    <a href="{% url 'event-delete' pk=event.pk %}" class="text-red-600 underline">Delete</a>
+                </div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        {% if user.is_authenticated and user.role == 'student' or user.role == 'club_manager' %}
+        {% if user.role == 'club_manager' and event.club.manager == user %}
+        <span class="text-gray-500 text-sm font-medium">Your Event</span>
+        {% elif event|is_registered:user %}
+        <button class="mt-4 w-full bg-gray-400 text-white py-2 rounded cursor-not-allowed" disabled>Already Registered</button>
+        {% else %}
+        <form method="post" action="{% url 'event-register' pk=event.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Register</button>
+        </form>
+        {% endif %}
+        {% endif %}
+        {% if not user.is_authenticated %}
+        <p class="text-gray-500 text-sm mt-2">Login to register</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

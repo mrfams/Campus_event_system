@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+    <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Cancel Registration</h2>
+    <p class="text-gray-700 mb-6">Are you sure you want to cancel your registration for "{{ object.event.title }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="flex space-x-4">
+            <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700">Confirm Cancel</button>
+            <a href="{% url 'event-list' %}" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400">Back to Events</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

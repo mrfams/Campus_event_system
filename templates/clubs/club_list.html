@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-3xl font-bold mb-6 text-center">Approved Clubs</h1>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+    {% for club in clubs %}
+    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow">
+        {% if club.logo %}
+        <img src="{{ club.logo.url }}" alt="{{ club.name }}" class="w-16 h-16 rounded-lg object-cover mb-3">
+        {% endif %}
+        <h3 class="text-xl font-bold text-gray-800">{{ club.name }}</h3>
+        <p class="text-gray-600 mt-2 line-clamp-3">{{ club.description|truncatewords:30 }}</p>
+        <div class="mt-4 flex justify-between items-center">
+            <span class="text-sm text-gray-500">{{ club.members.count }} members</span>
+            {% if user.is_authenticated and user.role == 'student' or user.role == 'club_manager' %}
+                {% if user.role == 'club_manager' and club.manager == user %}
+                <span class="text-gray-500 text-sm font-medium">Your Club</span>
+                {% elif user in club.members.all %}
+                <span class="text-green-600 text-sm font-medium">Joined</span>
+                {% else %}
+                <form method="post" action="{% url 'club-join' pk=club.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                        Join Club
+                    </button>
+                </form>
+                {% endif %}
+            {% else %}
+            <a href="{% url 'club-detail' pk=club.pk %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                View Details
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-gray-500 text-center col-span-3">No approved clubs available.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+    <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">My Profile</h2>
+    <div class="space-y-4">
+        <div class="flex items-center space-x-4">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="w-20 h-20 rounded-full object-cover">
+            {% else %}
+                <div class="w-20 h-20 rounded-full bg-blue-200 flex items-center justify-center">
+                    <span class="text-blue-700 font-semibold text-xl">{{ user.get_full_name|first|default:user.username|first }}</span>
+                </div>
+            {% endif %}
+            <div>
+                <p class="text-xl font-semibold">{{ user.get_full_name|default:user.username }}</p>
+                <p class="text-gray-600">{{ user.email }}</p>
+            </div>
+        </div>
+        <div class="border-t pt-4 space-y-2">
+            <p><strong>Student ID:</strong> {{ user.student_id|default:"Not set" }}</p>
+            <p><strong>Department:</strong> {{ user.department|default:"Not set" }}</p>
+            <p><strong>Role:</strong> {{ user.get_role_display }}</p>
+        </div>
+        <a href="{% url 'profile-edit' %}" class="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Edit Profile</a>
+    </div>
+    <div class="mt-6">
+        <h3 class="text-xl font-bold mb-4">My Clubs</h3>
+        {% if user.managed_clubs.all %}
+        <ul class="space-y-2">
+            {% for club in user.managed_clubs.all %}
+            <li class="p-2 bg-gray-50 rounded">
+                <a href="{% url 'club-detail' pk=club.pk %}" class="text-blue-600 hover:underline">{{ club.name }}</a>
+                <span class="text-gray-500 text-sm">(Manager)</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if user.joined_clubs.all %}
+        <ul class="space-y-2 mt-2">
+            {% for club in user.joined_clubs.all %}
+            <li class="p-2 bg-gray-50 rounded">
+                <a href="{% url 'club-detail' pk=club.pk %}" class="text-blue-600 hover:underline">{{ club.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if not user.managed_clubs.all and not user.joined_clubs.all %}
+        <p class="text-gray-500">You are not a member of any clubs.</p>
+        {% endif %}
+    </div>
+    <div class="mt-6">
+        <h3 class="text-xl font-bold mb-4">My Events</h3>
+        {% if user.event_registrations.all %}
+        <ul class="space-y-2">
+            {% for reg in user.event_registrations.all %}
+            <li class="p-2 bg-gray-50 rounded">
+                <a href="{% url 'event-detail' pk=reg.event.pk %}" class="text-blue-600 hover:underline">{{ reg.event.title }}</a>
+                <span class="text-gray-500 text-sm">({{ reg.event.club.name }})</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-gray-500">You are not registered for any events.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

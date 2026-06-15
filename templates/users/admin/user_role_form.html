@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Change User Role: {{ object.username }}</h1>
+<form method="post" class="bg-white p-6 rounded shadow">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 mt-4 rounded">Update Role</button>
+</form>
+{% endblock %}

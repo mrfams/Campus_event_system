@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-3xl font-bold mb-6">User Management</h1>
+<div class="space-y-4">
+    {% for user in users %}
+    <div class="bg-white p-4 rounded shadow flex justify-between items-center">
+        <div>
+            <span class="font-semibold">{{ user.username }}</span>
+            <span class="text-gray-600">({{ user.get_role_display }})</span>
+        </div>
+        <div class="space-x-2">
+            <a href="{% url 'user-role' pk=user.pk %}" class="text-blue-600 underline">Change Role</a>
+            <a href="{% url 'user-delete' pk=user.pk %}" class="text-red-600 underline">Delete</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

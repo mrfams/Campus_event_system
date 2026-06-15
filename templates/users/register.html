@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+    <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Create Account</h2>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div class="space-y-4 [&>p>input]:w-full [&>p>input]:p-3 [&>p>input]:border [&>p>input]:rounded-lg [&>p>label]:block [&>p>label]:font-semibold">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 transition duration-200 mt-6">
+            Register
+        </button>
+    </form>
+</div>
+{% endblock %}
