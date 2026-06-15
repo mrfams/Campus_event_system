@@ -2,6 +2,8 @@
 
 A Django-based platform for managing campus events and clubs.
 
+## Overview
+
 ## Project Setup
 
 ### Requirements
